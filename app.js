@@ -35,7 +35,6 @@ const game = () => {
     // forEach käy läpi taulukon (array) jokaisen vaihtoehdon
     playerOptions.forEach(option => {
       // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener <- eventListener
-
       // jokaiseen vaihtoehtoon lisätään kuuntelija (listener), joka on valmiina siihen, mikäli elementtiä painetaan
       option.addEventListener('click', function () {
         // Mikäli nappia painetaan, siirrytään tänne.
@@ -94,7 +93,7 @@ const game = () => {
         computerScoreBoard.textContent = computerScore;
       } else {
         result.textContent = 'Pelaaja voitti';
-        playerScore++;
+        playerScore--;
         playerScoreBoard.textContent = playerScore;
       }
     } else if (player == 'paper') {
@@ -122,7 +121,7 @@ const game = () => {
 
     chooseMove.innerText = 'Peli ohi!';
     movesLeft.style.display = 'none';
-
+    // Asetetaan CSS-tyylit: fontSize ja color
     if (playerScore > computerScore) {
       result.style.fontSize = '2rem';
       result.innerText = 'Voitit pelin';
@@ -133,7 +132,7 @@ const game = () => {
       result.style.color = 'red';
     } else {
       result.style.fontSize = '2rem';
-      result.innerText = 'Tie';
+      result.innerText = 'Tasapeli';
       result.style.color = 'grey';
     }
     reloadBtn.innerText = 'Käynnistä uudelleen';
