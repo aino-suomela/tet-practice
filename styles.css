@@ -53,15 +53,30 @@
 
 /* Styling on all three buttons */
 .kivi,
-.paper,
-.sakset {
+.paperi,
+.sakset,
+.easy,
+.medium,
+.hard {
   padding: 0.8rem;
   width: 100px;
   border-radius: 10px;
   background: green;
   outline: none;
   border: 1rem solid;
-  border-color: rgb(234, 56, 157);
+  border-color: green;
+  cursor: pointer;
+}
+
+.cheatButton {
+  padding: 0.5rem;
+  margin: 1rem;
+  width: 100px;
+  border-radius: 10px;
+  background: rgb(83, 83, 83);
+  outline: none;
+  border: 1rem solid;
+  border-color: rgb(83, 83, 83);
   cursor: pointer;
 }
 
@@ -75,13 +90,15 @@
   display: none;
   margin-top: 2rem;
   padding: 1rem;
-  background: rgb(147, 232, 255);
+  background: rgb(12, 146, 0);
   outline: none;
-  border-color: darkviolet;
-  border-radius: 10px;
+  border-color: rgb(12, 146, 0);
   cursor: pointer;
 }
-
+.cheat {
+  text-align: center;
+  margin: 1rem;
+}
 .result {
   margin-top: 20px;
   font-size: 1.2rem;

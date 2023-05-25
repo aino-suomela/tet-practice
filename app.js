@@ -10,6 +10,10 @@ const game = () => {
   // Pelikierroksia käytetty
   let moves = 0;
 
+  // Huijaus pois päältä
+  let cheating = false;
+  let difficulty;
+  let enableCheating = true;
   // Function to
 
   // document.querySelector valitsee dokumentista (nettisivu, se, mikä näkyy kun ohjelman/sivun avaa) elementin, jossa on parametria vastaava "selektori."
@@ -22,14 +26,66 @@ const game = () => {
     const paperBtn = document.querySelector('.paperi');
     // Haetaan documentista elementti, joilla on class=".sakset" (etsi vastaava paikka index.html-tiedostosta)
     const saksetBtn = document.querySelector('.sakset');
+    const cheatBtn = document.querySelector('.cheatButton');
+    const easyBtn = document.querySelector('.easy');
+    const mediumBtn = document.querySelector('.medium');
+    const hardBtn = document.querySelector('.hard');
 
     // Asetetaan löydetyt nappulat taulukkoon (array)
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array <-- tuolta lisätietoa Arraysta
     // Samoin tietokoneen eri vaihtoehdot lisätään taulukkoon
     const playerOptions = [kiviBtn, paperBtn, saksetBtn];
-    const computerOptions = ['kivi', 'paper', 'sakset'];
+    const computerOptions = ['kivi', 'paperi', 'sakset'];
+    const cheat = document.querySelector('.cheatResult');
 
-    // Function to start playing game
+    easyBtn.addEventListener('click', () => {
+      difficulty = 'easy';
+      setMaxCheating();
+    });
+    mediumBtn.addEventListener('click', () => {
+      difficulty = 'medium';
+      setMaxCheating();
+    });
+    hardBtn.addEventListener('click', () => {
+      difficulty = 'hard';
+      setMaxCheating();
+    });
+
+    let numberOfCheats = 10;
+    let maximumCheats = 10;
+
+    cheatBtn.addEventListener('click', () => {
+      // Muuta arvo käänteiseksi: !-operaattori on ns. "NOT"-operaattori, eli "cheating = not cheating" tai "not cheating = cheating"
+      if (maximumCheats > 0) {
+        cheating = !cheating;
+      }
+      if (cheating) {
+        cheat.innerText = 'Huijaus päällä';
+      } else {
+        cheat.innerText = 'Huijaus pois päältä';
+      }
+    });
+
+    const setMaxCheating = () => {
+      if (difficulty === 'easy') {
+        maximumCheats = 10;
+      }
+      if (difficulty === 'medium') {
+        maximumCheats = 5;
+        numberOfCheats = 5;
+      } else if (difficulty === 'hard') {
+        maximumCheats = 0;
+        numberOfCheats = 0;
+      }
+    };
+
+    const checkCheatingStatus = () => {
+      if (numberOfCheats > 0) {
+        numberOfCheats--;
+      } else if (numberOfCheats === 0) {
+        cheating = false;
+      }
+    };
 
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach <-- forEach-tietoa
     // forEach käy läpi taulukon (array) jokaisen vaihtoehdon
@@ -48,17 +104,25 @@ const game = () => {
         // Saadaksemme jäljellä olevat vuorot, vähennetään kymmenestä käytettyjen vuorojen määrä (10 - moves)
         movesLeft.innerText = `Moves Left: ${10 - moves}`;
 
-        // Math.random() palauttaa numeron väliltä 0-1. Tämä numero kerrotaan kolmella. Se voi olla siis desimaaliluku, jonka takia Math.floor() pyöristää sen lähimpään kokonaislukuun (0-2).
-        // Tällöin choiseNumber on 0, 1 tai 2. JavaScriptissa, kuten suurimmassa osassa ohjelmointikieliä taulukoiden (array) elementtien indeksit alkavat nollasta.
-        // Indeksi kertoo arrayssa elementin paikan. Esimerkkinä, jos meillä on taulukko const commonItems = ['auto', 'talo', 'pyörä'], voimme ottaa arraysta 'auto'-elementin seuraavalla tavalla: commonItems[0], tai pyörän tavalla: commonItems[2]
-
-        const choiceNumber = Math.floor(Math.random() * 3);
-        const computerChoice = computerOptions[choiceNumber];
+        checkCheatingStatus();
 
         // Winner-funktio ottaa vastaan kaksi parametriä, tekstin pelaajan valitsemasta painikkeesta (this.innerText) ja tietokoneen valinnan (computerChoice)
-
-        winner(this.innerText, computerChoice);
-
+        if (cheating && numberOfCheats < maximumCheats) {
+          let fixedResult;
+          player = this.innerText.toLowerCase();
+          if (player === 'paperi') {
+            fixedResult = 'kivi';
+          } else if (player === 'kivi') {
+            fixedResult = 'sakset';
+          } else {
+            fixedResult = 'paperi';
+          }
+          winner(player, fixedResult);
+        } else {
+          const choiceNumber = Math.floor(Math.random() * 3);
+          const computerChoice = computerOptions[choiceNumber];
+          winner(this.innerText, computerChoice);
+        }
         // Calling gameOver function after 10 moves
         if (moves == 10) {
           gameOver(playerOptions, movesLeft);
@@ -77,7 +141,7 @@ const game = () => {
     if (player === computer) {
       result.textContent = 'Tasapeli';
     } else if (player == 'kivi') {
-      if (computer == 'paper') {
+      if (computer == 'paperi') {
         result.textContent = 'Tietokone voitti';
         computerScore++;
         computerScoreBoard.textContent = computerScore;
@@ -93,10 +157,10 @@ const game = () => {
         computerScoreBoard.textContent = computerScore;
       } else {
         result.textContent = 'Pelaaja voitti';
-        playerScore--;
+        playerScore++;
         playerScoreBoard.textContent = playerScore;
       }
-    } else if (player == 'paper') {
+    } else if (player == 'paperi') {
       if (computer == 'sakset') {
         result.textContent = 'Tietokone voitti';
         computerScore++;
