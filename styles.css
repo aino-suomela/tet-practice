@@ -54,7 +54,10 @@
 /* Styling on all three buttons */
 .kivi,
 .paperi,
-.sakset {
+.sakset,
+.easy,
+.medium,
+.hard {
   padding: 0.8rem;
   width: 100px;
   border-radius: 10px;

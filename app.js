@@ -12,7 +12,8 @@ const game = () => {
 
   // Huijaus pois päältä
   let cheating = false;
-
+  let difficulty;
+  let enableCheating = true;
   // Function to
 
   // document.querySelector valitsee dokumentista (nettisivu, se, mikä näkyy kun ohjelman/sivun avaa) elementin, jossa on parametria vastaava "selektori."
@@ -26,6 +27,9 @@ const game = () => {
     // Haetaan documentista elementti, joilla on class=".sakset" (etsi vastaava paikka index.html-tiedostosta)
     const saksetBtn = document.querySelector('.sakset');
     const cheatBtn = document.querySelector('.cheatButton');
+    const easyBtn = document.querySelector('.easy');
+    const mediumBtn = document.querySelector('.medium');
+    const hardBtn = document.querySelector('.hard');
 
     // Asetetaan löydetyt nappulat taulukkoon (array)
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array <-- tuolta lisätietoa Arraysta
@@ -34,15 +38,54 @@ const game = () => {
     const computerOptions = ['kivi', 'paperi', 'sakset'];
     const cheat = document.querySelector('.cheatResult');
 
+    easyBtn.addEventListener('click', () => {
+      difficulty = 'easy';
+      setMaxCheating();
+    });
+    mediumBtn.addEventListener('click', () => {
+      difficulty = 'medium';
+      setMaxCheating();
+    });
+    hardBtn.addEventListener('click', () => {
+      difficulty = 'hard';
+      setMaxCheating();
+    });
+
+    let numberOfCheats = 10;
+    let maximumCheats = 10;
+
     cheatBtn.addEventListener('click', () => {
       // Muuta arvo käänteiseksi: !-operaattori on ns. "NOT"-operaattori, eli "cheating = not cheating" tai "not cheating = cheating"
-      cheating = !cheating;
+      if (maximumCheats > 0) {
+        cheating = !cheating;
+      }
       if (cheating) {
         cheat.innerText = 'Huijaus päällä';
       } else {
         cheat.innerText = 'Huijaus pois päältä';
       }
     });
+
+    const setMaxCheating = () => {
+      if (difficulty === 'easy') {
+        maximumCheats = 10;
+      }
+      if (difficulty === 'medium') {
+        maximumCheats = 5;
+        numberOfCheats = 5;
+      } else if (difficulty === 'hard') {
+        maximumCheats = 0;
+        numberOfCheats = 0;
+      }
+    };
+
+    const checkCheatingStatus = () => {
+      if (numberOfCheats > 0) {
+        numberOfCheats--;
+      } else if (numberOfCheats === 0) {
+        cheating = false;
+      }
+    };
 
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach <-- forEach-tietoa
     // forEach käy läpi taulukon (array) jokaisen vaihtoehdon
@@ -61,8 +104,10 @@ const game = () => {
         // Saadaksemme jäljellä olevat vuorot, vähennetään kymmenestä käytettyjen vuorojen määrä (10 - moves)
         movesLeft.innerText = `Moves Left: ${10 - moves}`;
 
+        checkCheatingStatus();
+
         // Winner-funktio ottaa vastaan kaksi parametriä, tekstin pelaajan valitsemasta painikkeesta (this.innerText) ja tietokoneen valinnan (computerChoice)
-        if (cheating) {
+        if (cheating && numberOfCheats < maximumCheats) {
           let fixedResult;
           player = this.innerText.toLowerCase();
           if (player === 'paperi') {
